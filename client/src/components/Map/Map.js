@@ -6,7 +6,7 @@ import { getPostsByLocation, setSelectedLocation } from "../../actions/posts";
 import { useDispatch } from "react-redux";
 import dotenv from 'dotenv'
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-
+import styles from "./styles";
 dotenv.config();
 const Map = () => {
     const dispatch = useDispatch();
@@ -46,13 +46,15 @@ const Map = () => {
     if(loadError) return "Error loading maps";
     if(!isLoaded) return "loading Maps"
     return( 
-        <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                zoom={18}
-                center = {center}
-                options={options}
-                onClick = {handleMapClick}
-        ></GoogleMap>
+        <div style={styles.mapContainer}>
+            <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={18}
+                    center = {center}
+                    options={options}
+                    onClick = {handleMapClick}
+            ></GoogleMap>
+        </div>
     )
 }
 export default Map;
