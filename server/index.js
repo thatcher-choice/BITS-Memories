@@ -14,8 +14,8 @@ app.use(express.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
 app.use('/posts', postRoutes);
-app.use("/user", userRouter);
-console.log(process.env.MONGO_URI, 'mongoo');
+app.use("/user", userRouter)
+;
 const CONNECTION_URL = process.env.MONGO_URI;
 const PORT = process.env.PORT|| 5080;
 
