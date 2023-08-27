@@ -23,7 +23,6 @@ const Map = () => {
     }
     const options = {
         styles:mapStyles,
-        disableDefaultUI:true,
         zoomControl : true,
     }
     const handleMapClick = (event) => {
