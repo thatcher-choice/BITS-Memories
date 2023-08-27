@@ -26,9 +26,8 @@ const Map = () => {
         zoomControl : true,
     }
     const handleMapClick = (event) => {
-        console.log('eve', event);
-        const lat = event.latLng.lat();
-        const lng = event.latLng.lng();
+        const lat = parseFloat(event.latLng.lat().toFixed(4));
+        const lng = parseFloat(event.latLng.lng().toFixed(4));
 
         // dispatch(setSelectedLocation(lat, lng))
         sessionStorage.setItem('selectedLocation', JSON.stringify({ lat, lng }));
@@ -39,7 +38,6 @@ const Map = () => {
         // history.push(`/posts`);
     }
     const key = process.env.GOOGLE_MAPS_KEY;
-    console.log(key,'keyy');
     const [markers, setMarkers] = React.useState([]);
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: 'AIzaSyBuGmr1-Jk4-1WMOlhiqcX6n9AzmKv9HQc', 
