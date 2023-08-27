@@ -1,6 +1,10 @@
-import { FETCH_ALL, FETCH_BY_SEARCH, FETCH_BY_CREATOR, FETCH_POST, CREATE, UPDATE, DELETE, LIKE, COMMENT } from '../constants/actionTypes';
+import { FETCH_ALL, FETCH_BY_SEARCH, FETCH_BY_CREATOR, FETCH_POST, CREATE, UPDATE, DELETE, LIKE, COMMENT, FETCH_BY_LOCATION, SET_SELECTED_LOCATION } from '../constants/actionTypes';
 
 export default (state = { isLoading: true, posts: [] }, action) => {
+  const initialState = {
+    selectedLocation: { lat: null, lng: null },
+  };
+
   switch (action.type) {
     case 'START_LOADING':
       return { ...state, isLoading: true };
@@ -13,6 +17,13 @@ export default (state = { isLoading: true, posts: [] }, action) => {
         currentPage: action.payload.currentPage,
         numberOfPages: action.payload.numberOfPages,
       };
+    case SET_SELECTED_LOCATION:
+        return {
+          ...state,
+          selectedLocation: action.payload,
+        };
+    case FETCH_BY_LOCATION:
+      return {...state, posts: action.payload.data}
     case FETCH_BY_SEARCH:
     case FETCH_BY_CREATOR:
       return { ...state, posts: action.payload.data };

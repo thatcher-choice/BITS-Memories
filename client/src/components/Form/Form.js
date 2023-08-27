@@ -9,8 +9,17 @@ import { createPost, updatePost } from '../../actions/posts';
 import useStyles from './styles';
 
 const Form = ({ currentId, setCurrentId }) => {
-  const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
+  const locationData = JSON.parse(sessionStorage.getItem('selectedLocation'));
+  const lat = locationData?.lat;
+  const lng = locationData?.lng;
+  console.log(lat, lng, "PIyuuu");
+  const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '', lat:lat, lng: lng });
+  console.log(postData, 'dataaa');
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
+  // const selectedLocation = useSelector((state) => state.selectedLocation);
+  // const {lat, lng} = selectedLocation;
+  
+  console.log(lat, lng, "thanda pani");
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -18,7 +27,7 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const clear = () => {
     setCurrentId(0);
-    setPostData({ title: '', message: '', tags: [], selectedFile: '' });
+    setPostData({ title: '', message: '', tags: [], selectedFile: '', lat: lat, lng: lng });
   };
 
   useEffect(() => {
@@ -30,6 +39,7 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
 
     if (currentId === 0) {
+      console.log(postData, 'postdata');
       dispatch(createPost({ ...postData, name: user?.result?.name }, history));
       clear();
     } else {

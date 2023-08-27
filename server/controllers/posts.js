@@ -34,6 +34,16 @@ export const getPostsBySearch = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 }
+export const getPostsByLocation = async (req, res) => {
+    const { lat, lng } = req.query;
+
+    try {
+        const posts = await PostMessage.find({ lat, lng});
+        res.json({ data: posts });
+    } catch (error) {    
+        res.status(404).json({ message: error.message });
+    }
+}
 
 export const getPostsByCreator = async (req, res) => {
     const { name } = req.query;
@@ -61,7 +71,7 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
     const post = req.body;
-
+    console.log(post, 'postbody');
     const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() })
 
     try {

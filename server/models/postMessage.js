@@ -13,6 +13,8 @@ const postSchema = mongoose.Schema({
         type: Date,
         default: new Date(),
     },
+    lat: { type: Number, required: true, get: v => parseFloat(v).toFixed(14) }, 
+    lng:{ type: Number, required: true, get: v => parseFloat(v).toFixed(14) },
 })
 
 var PostMessage = mongoose.model('PostMessage', postSchema);

@@ -9,29 +9,40 @@ import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
 import Pagination from '../Pagination';
 import useStyles from './styles';
+import { useEffect } from 'react';
+import { getPostsByLocation } from '../../actions/posts';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
-const Home = () => {
+const PostsLanding = () => {
   const classes = useStyles();
   const query = useQuery();
-  const page = query.get('page') || 1;
-  const searchQuery = query.get('searchQuery');
-
+  const page = query?.get('page') || 1;
+  const searchQuery = query?.get('searchQuery');
   const [currentId, setCurrentId] = useState(0);
   const dispatch = useDispatch();
-
+  const lat = query?.get('lat');
+  const lng = query?.get('lng');
   const [search, setSearch] = useState('');
   const [tags, setTags] = useState([]);
   const history = useHistory();
+
+  useEffect(() => {
+    // When lat and lng change, update the posts based on location
+    if (lat && lng) {
+      dispatch(getPostsByLocation({ lat, lng }));
+      history.push(`/posts?lat=${lat}&lng=${lng}`);
+    }
+  }, [lat, lng, dispatch]);
+
 
   const searchPost = () => {
     if (search.trim() || tags) {
       dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
       history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
     } else {
-      history.push('/');
+      history.push(`/`);
     }
   };
 
@@ -50,9 +61,9 @@ const Home = () => {
       <Container maxWidth="xl">
         <Grid container justify="space-between" alignItems="stretch" spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6} md={9}>
-            <Map></Map>
+            <Posts setCurrentId={setCurrentId} />
           </Grid>
-          <Grid item xs={12} sm={3} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <AppBar className={classes.appBarSearch} position="static" color="inherit">
               <TextField onKeyDown={handleKeyPress} name="search" variant="outlined" label="Search Memories" fullWidth value={search} onChange={(e) => setSearch(e.target.value)} />
               <ChipInput
@@ -78,4 +89,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default PostsLanding;

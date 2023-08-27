@@ -1,4 +1,4 @@
-import { START_LOADING, END_LOADING, FETCH_ALL, FETCH_POST, FETCH_BY_SEARCH, CREATE, UPDATE, DELETE, LIKE, COMMENT, FETCH_BY_CREATOR } from '../constants/actionTypes';
+import { SET_SELECTED_LOCATION,START_LOADING, END_LOADING, FETCH_ALL, FETCH_POST, FETCH_BY_SEARCH,FETCH_BY_LOCATION, CREATE, UPDATE, DELETE, LIKE, COMMENT, FETCH_BY_CREATOR } from '../constants/actionTypes';
 import * as api from '../api/index.js';
 
 export const getPost = (id) => async (dispatch) => {
@@ -12,6 +12,11 @@ export const getPost = (id) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const setSelectedLocation = (lat, lng) => ({
+  type: SET_SELECTED_LOCATION,
+  payload: { lat, lng },
+});
 
 export const getPosts = (page) => async (dispatch) => {
   try {
@@ -48,7 +53,14 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
     console.log(error);
   }
 };
+export const getPostsByLocation = (searchQuery) => async (dispatch) => {
+  try{
+    const {data:{data}} = await api.fetchPostByLocation(searchQuery);
+    dispatch({ type: FETCH_BY_LOCATION, payload: { data } });
+  } catch(error) {
 
+  }
+}
 export const createPost = (post, history) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
