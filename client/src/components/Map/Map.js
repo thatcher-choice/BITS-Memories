@@ -40,7 +40,7 @@ const Map = () => {
     const key = process.env.GOOGLE_MAPS_KEY;
     const [markers, setMarkers] = React.useState([]);
     const {isLoaded, loadError} = useLoadScript({
-        googleMapsApiKey: 'AIzaSyBuGmr1-Jk4-1WMOlhiqcX6n9AzmKv9HQc', 
+        googleMapsApiKey: '', 
         libraries,
     })
     if(loadError) return "Error loading maps";
