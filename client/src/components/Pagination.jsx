@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, PaginationItem } from '@material-ui/lab';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { getPosts } from '../actions/posts';
 import useStyles from './styles';
@@ -12,9 +12,12 @@ const Paginate = ({ page }) => {
   const dispatch = useDispatch();
 
   const classes = useStyles();
+  const location = useLocation();
 
   useEffect(() => {
-    if (page) {
+    const queryParams = new URLSearchParams(location.search);
+    const placeIdParam = queryParams.get('placeId');
+    if (!placeIdParam && page) {
       dispatch(getPosts(page));
     }
   }, [dispatch, page]);

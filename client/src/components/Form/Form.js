@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import FileBase from 'react-file-base64';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 
 import { createPost, updatePost } from '../../actions/posts';
@@ -12,7 +12,8 @@ const Form = ({ currentId, setCurrentId }) => {
   const locationData = JSON.parse(sessionStorage.getItem('selectedLocation'));
   const lat = locationData?.lat;
   const lng = locationData?.lng;
-  const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '', lat:lat, lng: lng });
+  const placeId = locationData?.placeId;
+  const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '', lat:lat, lng: lng,placeId : placeId });
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
   // const selectedLocation = useSelector((state) => state.selectedLocation);
   // const {lat, lng} = selectedLocation;
@@ -20,11 +21,11 @@ const Form = ({ currentId, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
-  const history = useHistory();
+  const history = useNavigate();
 
   const clear = () => {
     setCurrentId(0);
-    setPostData({ title: '', message: '', tags: [], selectedFile: '', lat: lat, lng: lng });
+    setPostData({ title: '', message: '', tags: [], selectedFile: '', lat: lat, lng: lng, placeId:placeId });
   };
 
   useEffect(() => {

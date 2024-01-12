@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const postSchema = mongoose.Schema({
+    placeId: {type: String, required: true, },
     title: String,
     message: String,
     name: String,

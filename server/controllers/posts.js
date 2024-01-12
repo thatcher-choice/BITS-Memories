@@ -1,27 +1,52 @@
 import express from 'express';
 import mongoose from 'mongoose';
-
+import dotenv from 'dotenv'
 import PostMessage from '../models/postMessage.js';
+import { v2 as cloudinary } from 'cloudinary'
+dotenv.config();
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret:process.env.API_SECRET ,
+    secure: true
+  });
 
 const router = express.Router();
 
 export const getPosts = async (req, res) => {
-    const { page } = req.query;
+    console.log(req.query, 'query req');
+    const { page, placeId } = req.query;
     
     try {
         const LIMIT = 8;
-        const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
-    
-        const total = await PostMessage.countDocuments({});
-        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
-
-        res.json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
+        let startIndex;
+        let posts;
+        let total;
+        const timeout = new Promise((resolve) => setTimeout(resolve, 2000)); // Adjust the timeout as needed
+        await timeout;
+        // Pagination logic if placeId is not provided
+        const updatedPlaceId = req.query.placeId;
+        if (updatedPlaceId) {
+            posts = await PostMessage.find({ placeId: updatedPlaceId });
+            total = posts.length;
+            res.json({ data: posts });
+        } else {
+            // Handle the case where placeId is still not available
+            console.log(placeId,'placeID');
+        startIndex = (Number(page) - 1) * LIMIT;
+        total = await PostMessage.countDocuments({});
+        posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+        res.json({ data: posts, currentPage: Number(page) || 1, numberOfPages: Math.ceil(total / LIMIT)});
+        }
     } catch (error) {    
         res.status(404).json({ message: error.message });
     }
 }
 
 export const getPostsBySearch = async (req, res) => {
+    console.log('welcome 2');
+
     const { searchQuery, tags } = req.query;
 
     try {
@@ -34,18 +59,11 @@ export const getPostsBySearch = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 }
-export const getPostsByLocation = async (req, res) => {
-    const { lat, lng } = req.query;
 
-    try {
-        const posts = await PostMessage.find({ lat, lng});
-        res.json({ data: posts });
-    } catch (error) {    
-        res.status(404).json({ message: error.message });
-    }
-}
 
 export const getPostsByCreator = async (req, res) => {
+    console.log('welcome 4');
+
     const { name } = req.query;
 
     try {
@@ -59,7 +77,7 @@ export const getPostsByCreator = async (req, res) => {
 
 export const getPost = async (req, res) => { 
     const { id } = req.params;
-
+    
     try {
         const post = await PostMessage.findById(id);
         
@@ -70,13 +88,20 @@ export const getPost = async (req, res) => {
 }
 
 export const createPost = async (req, res) => {
-    const post = req.body;
-    const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() })
-
     try {
-        await newPostMessage.save();
-
-        res.status(201).json(newPostMessage);
+        console.log(req.body, 'reqest file');
+        const file = req.body.selectedFile;
+        const cloudinaryResponse = await cloudinary.uploader.upload(file);
+        console.log(cloudinaryResponse, 'cloudinaryResponse');
+        const newPostMessage = new PostMessage({
+            ...req.body,
+            selectedFile: cloudinaryResponse.url,
+            creator: req.userId,
+            createdAt: new Date().toISOString(),
+          });
+            await newPostMessage.save();
+            res.status(201).json(newPostMessage);
+        
     } catch (error) {
         res.status(409).json({ message: error.message });
     }

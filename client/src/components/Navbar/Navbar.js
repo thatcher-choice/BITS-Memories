@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Typography, Toolbar, Avatar, Button } from '@material-ui/core';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { AppBar, Typography, Toolbar, Avatar, Button, Chip } from '@material-ui/core';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import decode from 'jwt-decode';
 
 import memoriesLogo from '../../images/memoriesLogo2.png';
 import memoriesText from '../../images/memoriesText1.png';
+import memories from '../../images/memories.png';
 import * as actionType from '../../constants/actionTypes';
 import useStyles from './styles';
-
 const Navbar = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
   const dispatch = useDispatch();
   const location = useLocation();
-  const history = useHistory();
+  const history = useNavigate();
   const classes = useStyles();
 
   const logout = () => {
     dispatch({ type: actionType.LOGOUT });
 
-    history.push('/auth');
+    history('/auth');
 
     setUser(null);
   };
@@ -35,13 +35,20 @@ const Navbar = () => {
 
     setUser(JSON.parse(localStorage.getItem('profile')));
   }, [location]);
-
+  const handleClick = () => {
+    history('/posts')
+  }
+  const handleClickMap = () => {
+    history('/')
+  }
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <Link to="/" className={classes.brandContainer}>
         <img component={Link} to="/" src={memoriesText} alt="icon" height="50px" />
         <img className={classes.image} src={memoriesLogo} alt="icon" height="80px" />
       </Link>
+      <Chip onClick={handleClick} size="large" label="Explore All Memories for an Endless Adventure!" variant='outlined' color="warning" avatar={<Avatar src={memories} />} />
+      <Chip onClick={handleClickMap} size="large" label="Or Select from Map" variant='outlined' color="warning"/>
       <Toolbar className={classes.toolbar}>
         {user?.result ? (
           <div className={classes.profile}>

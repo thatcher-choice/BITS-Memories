@@ -1,8 +1,8 @@
 import { FETCH_ALL, FETCH_BY_SEARCH, FETCH_BY_CREATOR, FETCH_POST, CREATE, UPDATE, DELETE, LIKE, COMMENT, FETCH_BY_LOCATION, SET_SELECTED_LOCATION } from '../constants/actionTypes';
 
-export default (state = { isLoading: true, posts: [] }, action) => {
+export default (state = { isLoading: false, posts: [] }, action) => {
   const initialState = {
-    selectedLocation: { lat: null, lng: null },
+    selectedLocation: { lat: null, lng: null, placeId:null },
   };
 
   switch (action.type) {

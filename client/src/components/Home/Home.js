@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Container, Grow, Grid, AppBar, TextField, Button, Paper } from '@material-ui/core';
+import { Container, Grow, Grid, AppBar, TextField, Button, Paper, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 import Map from '../Map/Map';
 import { getPostsBySearch } from '../../actions/posts';
@@ -24,14 +24,14 @@ const Home = () => {
 
   const [search, setSearch] = useState('');
   const [tags, setTags] = useState([]);
-  const history = useHistory();
+  const history = useNavigate();
 
   const searchPost = () => {
     if (search.trim() || tags) {
       dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-      history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+      history(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
     } else {
-      history.push('/');
+      history('/');
     }
   };
 
@@ -65,6 +65,11 @@ const Home = () => {
               />
               <Button onClick={searchPost} className={classes.searchButton} variant="contained" color="primary">Search</Button>
             </AppBar>
+            <Paper className={classes.paper} elevation={6}>
+              <Typography variant="h6" align="center">
+              Choose your favorite spot on the map, where memories come alive—create or relive your own story right there
+              </Typography>
+            </Paper>
           </Grid>
         </Grid>
       </Container>

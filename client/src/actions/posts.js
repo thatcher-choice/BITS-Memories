@@ -13,9 +13,9 @@ export const getPost = (id) => async (dispatch) => {
   }
 };
 
-export const setSelectedLocation = (lat, lng) => ({
+export const setSelectedLocation = (lat, lng, placeId) => ({
   type: SET_SELECTED_LOCATION,
-  payload: { lat, lng },
+  payload: { lat, lng, placeId  },
 });
 
 export const getPosts = (page) => async (dispatch) => {
@@ -68,7 +68,7 @@ export const createPost = (post, history) => async (dispatch) => {
 
     dispatch({ type: CREATE, payload: data });
 
-    history.push(`/posts/${data._id}`);
+    history(`/posts/${data._id}`);
   } catch (error) {
     console.log(error);
   }

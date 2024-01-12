@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Grow, Grid, AppBar, TextField, Button, Paper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 import Map from '../Map/Map';
 import { getPostsBySearch } from '../../actions/posts';
@@ -18,31 +18,32 @@ function useQuery() {
 const PostsLanding = () => {
   const classes = useStyles();
   const query = useQuery();
-  const page = query?.get('page') || 1;
   const searchQuery = query?.get('searchQuery');
   const [currentId, setCurrentId] = useState(0);
   const dispatch = useDispatch();
   const lat = query?.get('lat');
   const lng = query?.get('lng');
+  const placeId = query?.get('placeId');
+  const page = query?.get('page');
   const [search, setSearch] = useState('');
   const [tags, setTags] = useState([]);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     // When lat and lng change, update the posts based on location
-    if (lat && lng) {
-      dispatch(getPostsByLocation({ lat, lng }));
-      history.push(`/posts?lat=${lat}&lng=${lng}`);
+    if (lat && lng && placeId && !page) {
+      dispatch(getPostsByLocation({ lat, lng, placeId }));
+      history(`/posts?lat=${lat}&lng=${lng}&placeId=${placeId}`);
     }
-  }, [lat, lng, dispatch]);
+  }, [lat, lng, placeId, dispatch]);
 
 
   const searchPost = () => {
     if (search.trim() || tags) {
       dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-      history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+      history(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
     } else {
-      history.push(`/`);
+      history(`/`);
     }
   };
 
