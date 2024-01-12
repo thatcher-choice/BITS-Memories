@@ -55,6 +55,7 @@ const Map = () => {
         }
         
     }
+    console.log(process.env.REACT_APP_GOOGLE_MAPS_KEY, 'react key');
     const zoom = 18;
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY, 
